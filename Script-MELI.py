@@ -30,7 +30,7 @@ def buscador():
                 productos['NAME'] = response.json()['name']
                 listado_productos.append(productos)
                 try:
-                    archivo = SELLER_ID + ".log"
+                    archivo = f'{SELLER_ID}.log'
                     archivo_existe = os.path.isfile(archivo)
                     with open(archivo,'a+') as file:
 
@@ -48,16 +48,15 @@ def buscador():
 
             cantidad_users = int(input("Ingrese la cantidad de usuarios que desea buscar: "))
             IDS= ""
-            contador = 0
-            for i in range (1, cantidad_users+1):
+            for contador, i in enumerate(range (1, cantidad_users+1), start=1):
                 SELLER_ID = input(f"Ingrese el número del {i} ID que desea buscar, para ello ingrese MLA seguido del ID: ")
-                contador += 1
-                if contador != cantidad_users:
-                    coma = ","
-                else:
-                    coma = ""
+                coma = "," if contador != cantidad_users else ""
                 IDS += SELLER_ID + coma
-                url = ("https://api.mercadolibre.com/items?ids="+IDS+"&attributes={id,title,category_id,name}&access_token=$ACCESS_TOKEN")
+                url = (
+                    f"https://api.mercadolibre.com/items?ids={IDS}"
+                    + "&attributes={id,title,category_id,name}&access_token=$ACCESS_TOKEN"
+                )
+
                 payload = {}
                 headers= {}
 
@@ -67,7 +66,7 @@ def buscador():
                 cantidad = len(data['results'])
 
                 for i in range(cantidad):
-                        
+
                     productos['ID'] = data['results'][i]['id']
                     productos['TITLE'] = data['results'][i]['title']
                     productos['CATEGORY_ID'] = data['results'][i]['category_id']
@@ -86,7 +85,7 @@ def buscador():
                             file.writelines(str(listado_productos))
                     except IOError:
                         print("Ocurrio un error con el archivo")
-        
+
         except IOError:
                 print("Ocurrio un error con el archivo")
 
